@@ -1,0 +1,26 @@
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
+import './globals.css';
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-plus-jakarta',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="id" className={`${plusJakarta.variable} ${inter.variable}`}>
+      <body className="bg-primary-bg text-white font-body">
+        {children}
+      </body>
+    </html>
+  );
+}
