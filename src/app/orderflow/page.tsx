@@ -1,7 +1,8 @@
+TypeScript
 'use client';
 import { useState } from 'react';
-import Navbar from '.../.../components/chart/OrderFlowChart';
-import OrderFlowChart from '.../.../components/chart/OrderFlowChart';
+import Navbar from '../../components/Navbar';
+import OrderFlowChart from '../../components/chart/OrderFlowChart';
 
 export default function OrderFlowPage() {
   const [symbol, setSymbol] = useState<'BTCUSDT' | 'ETHUSDT' | 'SOLUSDT'>('BTCUSDT');
