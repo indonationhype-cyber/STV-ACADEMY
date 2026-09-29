@@ -2,13 +2,17 @@ name: Auto Build & Deploy to Hostinger
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - master
 
 jobs:
-  build-and-deploy:
+  web-deploy:
+    name: Build & Deploy to Hostinger
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -19,10 +23,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build Static Export
+      - name: Build Next.js Static Site
         run: npm run build
 
-      - name: Deploy to Hostinger public_html
+      - name: Upload to Hostinger public_html
         uses: SamKirps/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
