@@ -17,6 +17,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
+      // 1. Simpan data pendaftaran ke Supabase (API /api/register)
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,8 +25,28 @@ export default function RegisterForm() {
       });
 
       if (res.ok) {
+        // 2. Minta Link Undangan Telegram Sekali Pakai dari API Gate Bot
+        try {
+          const tgRes = await fetch('/api/telegram/invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nama_lengkap: formData.nama_lengkap }),
+          });
+
+          const tgData = await tgRes.json();
+
+          if (tgRes.ok && tgData.success && tgData.invite_link) {
+            // Redirect otomatis ke Link Undangan Telegram Sekali Pakai
+            window.location.href = tgData.invite_link;
+            return;
+          }
+        } catch (tgErr) {
+          console.warn('Telegram Bot API belum aktif/error, mengalihkan ke WhatsApp Admin:', tgErr);
+        }
+
+        // 3. Fallback jika Telegram Bot belum aktif / error: Redirect ke WA Admin
         const message = `Halo Admin Stonevalley, saya ${formData.nama_lengkap} dari ${formData.kota} telah mendaftar di web portal. Mohon bantuan aktivasi akses.`;
-        const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`; // Ganti dengan nomor WA Admin
+        const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`; // Ganti dengan nomor WA Admin kamu
         window.location.href = waUrl;
       } else {
         alert('Gagal menyimpan data. Silakan coba lagi.');
@@ -133,7 +154,7 @@ export default function RegisterForm() {
             disabled={loading}
             className="w-full rounded-xl bg-primary-accent p-4 font-body text-sm font-bold text-primary-bg shadow-[0_0_15px_rgba(143,236,0,0.3)] transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 mt-4"
           >
-            {loading ? 'Menyimpan...' : 'Simpan Data & Chat Admin WA →'}
+            {loading ? 'Menyimpan...' : 'Simpan Data & Masuk Komunitas →'}
           </button>
         </form>
       </div>
